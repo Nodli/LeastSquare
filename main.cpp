@@ -1,9 +1,61 @@
 #include <iostream>
-#include <Matrix.h>
+#include <matrix.h>
+
 
 bool test_Matrix(){
 	std::cout << "test_Matrix" << std::endl;
+	Matrix m0(1, 5);
+	m0.display();
+	
+	double v1[4] = {1., 5., 2., 7.};
+	Matrix m1(2, 2, v1);
+	m1.display();
+	
+	Matrix m2(m0);
+	m2.display();
 
+	m2.setValue(1, 7.);
+	m2.display();
+	m2.setValue(0, 4, 10.);
+	m2.display();
+	
+	double v3[9] = {1., 2., 3., 4., 5., 6., 7., 8., 9.};
+	Matrix m3(3, 3, v3);
+	m3.display();
+	m3.removeL(2);
+	m3.display();
+	m3.removeC(2);
+	m3.display();
+	
+	std::cout << m3.getValue(1) << std::endl;
+	std::cout << m3.getValue(1, 1) << std::endl;
+	std::cout << m3.getSize() << std::endl;
+	std::cout << m0.getSizeL() << std::endl;
+	std::cout << m0.getSizeC() << std::endl;
+	
+	double v4[9] = {1., 2., 3., 4., 5., 6., 7., 8., 9.};
+	Matrix m4(3, 3, v4);
+	m4.display();
+	(m4 *= 2.).display();
+	
+	double v5[3] = {10., 11., 12.};
+	Matrix m5(3, 1, v5);
+	m5.display();
+	(m4 *= m5).display();
+	
+	double v6[9] = {1., 9., 2., 8., 3., 7., 4., 6., 5.};
+	Matrix m6(3, 3, v6);
+	m6.display();
+	std::cout << m6.det() << std::endl;
+	
+/*
+	Determinant of matrix is calculated only for square matrices.
+
+For non-square matrices, there’s no determinant value.
+
+Same is the case for Inverse of matrix.
+*/
+/*
 	Matrix m(3, 2);
 	m.display();
 	m.setValue(5., 1);
@@ -47,62 +99,20 @@ bool test_Matrix(){
 	//m5.display();
 	m4.inv33();
 	//m4.display();
+*/
 }
 
-double regLin(double* xvalues, double* yvalues, int size){
-	double avalues[4] = {0, 0, 0, 0};
-	double bvalues[2] = {0, 0};
-	for(int i = 0; i != size; ++i){
-		avalues[0] += xvalues[i] * xvalues[i];
-		avalues[1] += xvalues[i];
-		avalues[2] += xvalues[i];
-		bvalues[0] += xvalues[i] * yvalues[i];
-		bvalues[1] += yvalues[i];
-	}
-	avalues[3] = size;
-    Matrix a(2, 2, avalues);
-    a.display();
-    Matrix b(2, 1, bvalues);
-    b.display();
-    a.inv22();
-    a.display();
-    a.mul(b);
-    a.display();
-}
-
-double regParab(double* xvalues, double* yvalues, int size){
-	double bvalues[3] = {0, 0, 0};
-	double x3sum = 0;
-	double x2sum = 0;
-	double xsum = 0;
-	for(int i = 0; i != size; ++i){
-		avalues[0] += xvalues[i] * xvalues[i] * xvalues[i] * xvalues[i];
-		x3sum += xvalues[i] * xvalues[i] * xvalues[i];
-		x2sum += xvalues[i] * xvalues[i];
-		xsum += xvalues[i];
-		bvalues[0] += xvalues[i] * xvalues[i] * yvalues[i];
-		bvalues[1] += xvalues[i] * yvalues[i];
-		bvalues[2] += yvalues[i];
-	}
-	double avalues[9] = {x4sum, x3sum, x2sum, x3sum, x2sum, xsum, x2sum, xsum, size};
-	Matrix a(3, 3, avalues);
-    Matrix b(3, 1, bvalues);
-	std::cout << "Matrix A: ";
-	a.display();
-    std::cout << "Matrix B: ";
-    b.display();
-    a.inv33();
-    a.mul(b);
-    a.display();
+bool test_reg(){
+	double x[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	double y[16] = {1, 1, 2, 4, 6, 7, 6, 9, 6, 8, 10, 12, 14, 16, 19, 25};
+	//regLin(x, y, 16);
+	//regParab(x, y, 16);
 }
 
 int main()
 {
-	//test_Matrix();
-	double x[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	double y[16] = {1, 1, 2, 4, 6, 7, 6, 9, 6, 8, 10, 12, 14, 16, 19, 25};
-	regLin(x, y, 16);
-	regParab(x, y, 16);
+	test_Matrix();
+	//test_reg;
 
 
     return 0;
