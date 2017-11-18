@@ -14,6 +14,7 @@ public:
 	Matrix(int sizeL, int sizeC);
 	/**
 	* \brief Constructor of a filled Matrix
+	* \details The Matrix instance holds a copy of values
 	* \param[in] sizeL Number of lines in the Matrix
 	* \param[in] sizeC Number of columns in the Matrix
 	* \param[in] values Table holding the values of the Matrix such as
@@ -23,6 +24,7 @@ public:
 	Matrix(int sizeL, int sizeC, const double* values);
 	/**
 	* \brief Copy constructor of a Matrix object
+	* \details The Matrix instance holds a copy of m.values_
 	* \param[in] m Matrix to copy
 	*/
 	Matrix(const Matrix& m);
