@@ -30,6 +30,7 @@ public:
 	Matrix(const Matrix& m);
 	/**
 	* \brief Destructor of a Matrix
+	* \details Deletes the dynamically allocated values_
 	*/
 	~Matrix();
 
