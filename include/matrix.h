@@ -1,6 +1,9 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+/**
+* \class Models a Matrix with values stored as double
+*/
 class Matrix{
 public:
 	/**
@@ -18,12 +21,12 @@ public:
 	*  the Matrix
 	*/
 	Matrix(int sizeL, int sizeC, const double* values);
-	/*
-	* \brief Copy constructor of a Matrix
+	/**
+	* \brief Copy constructor of a Matrix object
 	* \param[in] m Matrix to copy
 	*/
 	Matrix(const Matrix& m);
-	/*
+	/**
 	* \brief Destructor of a Matrix
 	*/
 	~Matrix();
@@ -53,16 +56,16 @@ public:
 	* \param[in] c Index of the column to remove [0, sizeC_ - 1]
 	*/
 	void removeC(int c);
-	
+
 
 	/**
-	* \brief Gets a value in the Matrix using raw coordinates
+	* \brief Returns a value in the Matrix using raw coordinates
 	* \param[in] n Raw index of the cell to read; n = l * sizeL_ + c with (l, c)
 	*  the coordinates of the cell in the Matrix
 	*/
 	double getValue(int n) const;
 	/**
-	* \brief Gets a value in the Matrix using matrix coordinates
+	* \brief Returns a value in the Matrix using matrix coordinates
 	* \param[in] l Line index of the cell to read
 	* \param[in] c Column index of the cell to read
 	*/
@@ -88,45 +91,52 @@ public:
 	/**
 	* \brief Scalar multiplication of the Matrix
 	* \param[in] d Value of the scalar to multiply the Matrix by
+	* \returns Reference to the multiplied Matrix
 	*/
 	Matrix& operator*=(double d);
 	/**
 	* \brief Matrix multiplication of the Matrix
 	* \param[in] m Matrix to multiply the Matrix
+	* \returns Reference to the multiplied Matrix
 	*/
 	Matrix& operator*=(const Matrix& m);
 	/**
-	* \brief Computes the value of the Matrix determinant
-	* \param sum Recursive parameter, 
+	* \brief Returns the value of the Matrix determinant
+	* \param sum Recursive parameter,
 	*/
 	double det();
 	/**
-	* \brief Transposes the Matrix
+	* \brief In-place transposition of the Matrix
+	* \returns Reference to the transposed Matrix
 	*/
-	void trans();
+	Matrix& trans();
 	/**
-	* \brief Computes the comatrix of the Matrix
+	* \brief Returns the comatrix of the Matrix
+	* \param[out] comat Matrix to store the comatrix
+	* \returns Reference to the comatrix instance of Matrix
 	*/
-	void comat();
+	Matrix& comat(Matrix& comat);
 	/**
-	* \brief Inverses the square Matrix of size 2
+	* \brief In-place inversion of square Matrix of size 2
 	* \details Implementation of the Kramer inversion formula for 2x2 Matrix
+	* \returns Reference to the inversed Matrix
 	*/
-	void inv22();
+	Matrix& inv22();
 	/**
-	* \brief Inverses the square Matrix of size 3
+	* \brief In-place inversion of square Matrix of size 3
 	* \details Implementation of the Kramer inversion formula for 3x3 Matrix
+	* \returns Reference to the inversed Matrix
 	*/
-	void inv33();
+	Matrix& inv33();
 
 private:
-	int size_;
-	int sizeL_;
-	int sizeC_;
-	double* values_;
+	int size_; //Raw size of the Matrix
+	int sizeL_; //Number of lines in the Matrix
+	int sizeC_; //Number of columns in the Matrix
+	double* values_; //Points towards the value table of the Matrix
 };
 
-/*
+/**
 * \brief Returns the power multiplication of a number
 * \param[in] d Number to multiply
 * \param[in] e Exponant

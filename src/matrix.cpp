@@ -18,11 +18,11 @@ Matrix::Matrix(int sizeL, int sizeC, const double* values): size_(sizeL * sizeC)
 	}
 }
 
-Matrix::Matrix(const Matrix& m): size_(m.getSize()), sizeL_(m.getSizeL()), sizeC_(m.getSizeC()){
-	std::cout << "Matrix(Matrix) from " << &m << " at " << this << std::endl;
+Matrix::Matrix(const Matrix& m): size_(m.size_), sizeL_(m.sizeL_), sizeC_(m.sizeC_){
+	std::cout << "Matrix(Matrix) at " << this << " from " << &m << std::endl;
 	values_ = new double[size_];
 	for(int i = 0; i != size_; ++i){ //Dynamic copy of the values
-		values_[i] = m.getValue(i);
+		values_[i] = m.values_[i];
 	}
 }
 
@@ -108,7 +108,7 @@ int Matrix::getSizeC() const{
 }
 
 void Matrix::display() const{
-	std::cout << "Displaying Matrix(" << sizeL_ << ", " << sizeC_ << ") at " << this << std::endl;
+	std::cout << "display() of Matrix(" << sizeL_ << ", " << sizeC_ << ") at " << this << std::endl;
 	for(int i = 0; i != size_; ++i){
 		std::cout << values_[i] << " ";
 		if(!((i + 1) % sizeC_)){ //Line formating
@@ -118,7 +118,7 @@ void Matrix::display() const{
 }
 
 Matrix& Matrix::operator*=(double d){
-	std::cout << "operator*=(double) at " << this << std::endl;
+	std::cout << "operator*=(double) from Matrix at " << this << std::endl;
 	for(int i = 0; i != size_; ++i){
         values_[i] *= d;
 	}
@@ -127,7 +127,7 @@ Matrix& Matrix::operator*=(double d){
 
 Matrix& Matrix::operator*=(const Matrix& m){
 	assert(sizeC_ == m.sizeL_);
-	std::cout << "operator*=(Matrix) at " << this << " by Matrix at " << &m << std::endl;
+	std::cout << "operator*=(Matrix) from Matrix at " << this << " by Matrix at " << &m << std::endl;
 	int newsize_ = sizeL_ * m.sizeC_;
 	double* newvalues_ = new double[newsize_];
 	for(int l = 0; l != sizeL_; ++l){ //Line index in the left matrix
@@ -142,13 +142,13 @@ Matrix& Matrix::operator*=(const Matrix& m){
 	delete[] values_;
 	values_ = newvalues_;
 	size_ = newsize_;
-	sizeC_ = m.getSizeC();
+	sizeC_ = m.sizeC_;
 	return *this;
 }
 
-double Matrix::det(){ //TODO: Get rid of getValue calls
+double Matrix::det(){
 	assert(sizeL_ == sizeC_);
-	std::cout << "det() at " << this << std::endl;
+	std::cout << "det() from Matrix at " << this << std::endl;
 	if(sizeC_ == 2){ //End of the recursion
 		return values_[0] * values_[3] - values_[1] * values_[2];
 	}else{
@@ -164,8 +164,8 @@ double Matrix::det(){ //TODO: Get rid of getValue calls
 	}
 }
 
-void Matrix::trans(){
-	//std::cout << "Transposing Matrix at " << this << std::endl;
+Matrix& Matrix::trans(){
+	std::cout << "trans() from Matrix at " << this << std::endl;
 	double* newvalues_ = new double[size_];
 	int newindex = 0;
 	for(int c = 0; c != sizeC_; ++c){
@@ -176,46 +176,52 @@ void Matrix::trans(){
 	}
 	delete[] values_; //Dynamic allocation must be freed
 	values_ = newvalues_;
-	int buffer = sizeL_; //Buffer for size switching
+	int buffer = sizeL_; //Buffer for switching sizes
 	sizeL_ = sizeC_;
 	sizeC_ = buffer;
+	return *this;
 }
 
-
-
-
-void Matrix::comat(){
-	//std::cout << "Comatrix of Matrix at " << this << std::endl;
-	double* newvalues = new double[size_];
+Matrix& Matrix::comat(Matrix& comat){
+	assert(sizeL_ == sizeC_);
+	std::cout << "comat() at " << this << " from " << &comat << std::endl;
+	double* cofValues = new double[size_];
 	for(int l = 0; l != sizeL_; ++l){
 		for(int c = 0; c != sizeC_; ++c){
-			Matrix m(*this);
-			m.removeL(l);
-			m.removeC(c);
-			newvalues[l * sizeC_ + c] = pow(-1, l + c) * m.det();
+			Matrix cofMat(*this); //Submatrix to compute the determinant on
+			cofMat.removeL(l);
+			cofMat.removeC(c);
+			cofValues[l * sizeC_ + c] = pow(-1, l + c) * cofMat.det();
 		}
 	}
-	delete[] values_;
-	values_ = newvalues;
+	comat.size_ = size_;
+	comat.sizeL_ = sizeL_;
+	comat.sizeC_ = sizeC_;
+	delete[] comat.values_;
+	comat.values_ = cofValues;
+	return comat;
 }
 
-void Matrix::inv22(){
-	//std::cout << "Inverting 2x2 Matrix at " << this << std::endl;
-	*this *= 1 / (values_[0] * values_[3] - values_[1] * values_[2]);
-	double tempval = values_[0];
+Matrix& Matrix::inv22(){
+	assert(sizeL_ == sizeC_);
+	std::cout << "inv22() at " << this << std::endl;
+	operator*=(1 / (values_[0] * values_[3] - values_[1] * values_[2]));
+	double tempval = values_[0]; //Buffer for switching values
 	values_[0] = values_[3];
 	values_[3] = tempval;
 	values_[1] = - values_[1];
 	values_[2] = - values_[2];
+	return *this;
 }
 
-//TODO
-void Matrix::inv33(){
-	//http://mathworld.wolfram.com/images/equations/MatrixInverse/NumberedEquation4.gif
-	std::cout << "Inverting 3x3 Matrix at " << this << std::endl;
-	double detMat = det();
-	double* newvalues = new double[size_];
-	comat();
-	trans();
-	*this *= 1 / detMat;
+Matrix& Matrix::inv33(){
+	assert(sizeL_ == sizeC_);
+	std::cout << "inv33() at " << this << std::endl;
+	Matrix adjMat(0, 0);
+	comat(adjMat).trans();
+	adjMat *= 1 / det();
+	double* tempValues = adjMat.values_; //Buffer for switching values
+	adjMat.values_ = values_; //Dynamic allocation will be freed on adjMat deletion at then end of the block
+	values_ = tempValues;
+	return *this;
 }
