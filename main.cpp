@@ -1,5 +1,6 @@
 #include <iostream>
 #include <matrix.h>
+#include <regression.h>
 
 bool test_Matrix(){
 	std::cout << "test_Matrix" << std::endl;
@@ -67,11 +68,12 @@ bool test_Matrix(){
 	return true;
 }
 
-bool test_reg(){
-	//double x[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	//double y[16] = {1, 1, 2, 4, 6, 7, 6, 9, 6, 8, 10, 12, 14, 16, 19, 25};
-	//regLin(x, y, 16);
-	//regParab(x, y, 16);
+bool test_Regression2D(){
+	double x[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	double y[16] = {1, 1, 2, 4, 6, 7, 6, 9, 6, 8, 10, 12, 14, 16, 19, 25};
+	Regression2D r(16, x, y);
+	r.Linear();
+	r.Parabolic();
 
 	return true;
 }
@@ -79,8 +81,7 @@ bool test_reg(){
 int main()
 {
 	test_Matrix();
-	//test_reg;
-
+	test_Regression2D();
 
     return 0;
 }
