@@ -5,7 +5,7 @@
 #include <matrix.h>
 
 Regression2D::Regression2D(int s, const double* valuesX, const double* valuesY): size_(s){
-	std::cout << "Regression2D(int, double*, double*) at " << this << std::endl;
+	//std::cout << "Regression2D(int, double*, double*) at " << this << std::endl;
 	valuesX_ = new double[size_];
 	valuesY_ = new double[size_];
 	for(int i = 0; i != size_; ++i){
@@ -15,13 +15,13 @@ Regression2D::Regression2D(int s, const double* valuesX, const double* valuesY):
 }
 
 Regression2D::~Regression2D(){
-	std::cout << "~Regression2D at " << this << std::endl;
+	//std::cout << "~Regression2D at " << this << std::endl;
 	delete[] valuesX_;
 	delete[] valuesY_;
 }
 
 void Regression2D::Linear() const{
-	std::cout << "Linear() at " << this << std::endl;
+	//std::cout << "Linear() at " << this << std::endl;
 	double avalues[4] = {0, 0, 0, 0};
 	double bvalues[2] = {0, 0};
 	for(int i = 0; i != size_; ++i){
@@ -39,7 +39,7 @@ void Regression2D::Linear() const{
 }
 
 void Regression2D::Parabolic() const{
-	std::cout << "Parabolic() at " << this << std::endl;
+	//std::cout << "Parabolic() at " << this << std::endl;
 	double bvalues[3] = {0, 0, 0};
 	double x4sum = 0;
 	double x3sum = 0;
