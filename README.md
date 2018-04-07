@@ -1,3 +1,2 @@
 # LeastSquare
-An implementation of the least square method for parabolic and linear curve equations.
-This was done from scratch for a school assignment.
+An implementation of the Least Square Method to fit Parabolic and Linear Curves on 1D Data.
